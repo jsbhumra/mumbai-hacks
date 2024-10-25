@@ -41,7 +41,7 @@ export default function ManagerDashboard() {
       {
         label: "Tasks",
         data: [12, 19, 3, 5],
-        backgroundColor: ["#e74c3c", "#3498db", "#f1c40f", "#2ecc71"],
+        backgroundColor: ["#3498db", "#f1c40f", "#2ecc71", "#e74c3c"],
       },
     ],
   };
@@ -49,16 +49,16 @@ export default function ManagerDashboard() {
   const chartOptions = {
     responsive: true,
     plugins: {
-      legend: { position: "top", labels: { color: "#fff" } },
+      legend: { position: "top", labels: { color: "#333" } },
       title: {
         display: true,
         text: "Task Progress Overview",
-        color: "#fff",
+        color: "#333",
       },
     },
     scales: {
-      x: { ticks: { color: "#fff" } },
-      y: { ticks: { color: "#fff" } },
+      x: { ticks: { color: "#333" } },
+      y: { ticks: { color: "#333" } },
     },
   };
 
@@ -73,20 +73,18 @@ export default function ManagerDashboard() {
           <>
             <section className="flex justify-center">
               <div className="grid gap-6 md:grid-cols-4 lg:grid-cols-0">
-                <Card className="bg-black text-white shadow-lg border border-gray-300 hover:shadow-2xl transform transition-transform hover:-translate-y-1">
+                <Card className="bg-white text-gray-800 shadow-lg border border-gray-200 hover:shadow-2xl transform transition-transform hover:-translate-y-1">
                   <CardHeader>
                     <CardTitle className="text-lg font-bold">Ongoing Tasks</CardTitle>
                   </CardHeader>
                   <CardContent className="text-4xl font-semibold">25</CardContent>
                 </Card>
-                {/* You can add more cards here */}
               </div>
-              {/* Add more cards here */}
             </section>
             <section className="grid gap-6 md:grid-cols-2">
-              <Card className="bg-black shadow-lg border-none rounded-lg">
+              <Card className="bg-white shadow-lg border border-gray-200 rounded-lg">
                 <CardHeader className="border-b">
-                  <CardTitle className="text-xl font-bold text-white">
+                  <CardTitle className="text-xl font-bold text-gray-800">
                     Task Overview
                   </CardTitle>
                 </CardHeader>
@@ -95,15 +93,14 @@ export default function ManagerDashboard() {
                 </CardContent>
               </Card>
 
-              {/* Add a card for project activity */}
-              <Card className="bg-black shadow-lg border-none rounded-lg">
+              <Card className="bg-white shadow-lg border border-gray-200 rounded-lg">
                 <CardHeader className="border-b">
-                  <CardTitle className="text-xl font-bold text-white">
+                  <CardTitle className="text-xl font-bold text-gray-800">
                     Team Performance
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6">
-                  <p className="text-lg text-gray-300">Performance overview here...</p>
+                  <p className="text-lg text-gray-600">Performance overview here...</p>
                 </CardContent>
               </Card>
             </section>
@@ -113,12 +110,12 @@ export default function ManagerDashboard() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-black text-gray-100">
-      <header className="flex items-center justify-between px-8 py-5 bg-black shadow-md">
+    <div className="flex flex-col min-h-screen bg-white text-gray-900">
+      <header className="flex items-center justify-between px-8 py-5 bg-white shadow-md">
         <h1 className="text-3xl font-bold">GenAI Task Management</h1>
         <div className="flex items-center space-x-4">
           <Button variant="ghost" size="icon">
-            <Bell className="h-6 w-6 text-white" />
+            <Bell className="h-6 w-6 text-gray-600" />
           </Button>
           <Avatar>
             <AvatarImage src="/placeholder-avatar.jpg" alt="Manager" />
@@ -128,11 +125,11 @@ export default function ManagerDashboard() {
       </header>
 
       <div className="flex flex-1">
-        <nav className="w-64 p-4 bg-black text-gray-300">
+        <nav className="w-64 p-4 bg-gray-100 text-gray-700">
           <div className="space-y-4">
             <Button
               variant={currentPage === "dashboard" ? "secondary" : "ghost"}
-              className={`w-full justify-start ${currentPage === "dashboard" ? "text-blue-300" : "text-gray-300"
+              className={`w-full justify-start ${currentPage === "dashboard" ? "text-blue-500" : "text-gray-600"
                 }`}
               onClick={() => setCurrentPage("dashboard")}
             >
@@ -142,7 +139,7 @@ export default function ManagerDashboard() {
 
             <Button
               variant={currentPage === "team" ? "secondary" : "ghost"}
-              className={`w-full justify-start ${currentPage === "team" ? "text-blue-300" : "text-gray-300"
+              className={`w-full justify-start ${currentPage === "team" ? "text-blue-500" : "text-gray-600"
                 }`}
               onClick={() => setCurrentPage("team")}
             >
@@ -152,7 +149,7 @@ export default function ManagerDashboard() {
 
             <Button
               variant={currentPage === "assign" ? "secondary" : "ghost"}
-              className={`w-full justify-start ${currentPage === "assign" ? "text-blue-300" : "text-gray-300"
+              className={`w-full justify-start ${currentPage === "assign" ? "text-blue-500" : "text-gray-600"
                 }`}
               onClick={() => setCurrentPage("assign")}
             >

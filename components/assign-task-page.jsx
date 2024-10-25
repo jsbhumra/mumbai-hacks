@@ -61,13 +61,13 @@ export function AssignTaskPage() {
 
   return (
     <div className="space-y-8">
-      <h2 className="text-4xl font-extrabold tracking-tight text-white">Assign Tasks</h2>
+      <h2 className="text-4xl font-extrabold tracking-tight text-gray-900">Assign Tasks</h2>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {tasks.map((task) => (
-          <Card key={task._id} className="bg-[#1a1a1a] text-white border border-gray-700 shadow-lg hover:shadow-2xl transform transition-transform hover:-translate-y-1">
+          <Card key={task._id} className="bg-white text-gray-900 border border-gray-200 shadow-lg hover:shadow-xl transform transition-transform hover:-translate-y-1">
             <CardHeader>
-              <CardTitle className="text-xl font-semibold text-white">{task.title}</CardTitle>
-              <CardDescription className="text-gray-400">{task.description}</CardDescription>
+              <CardTitle className="text-xl font-semibold text-gray-900">{task.title}</CardTitle>
+              <CardDescription className="text-gray-600">{task.description}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex items-center space-x-4 mb-4">
@@ -77,12 +77,12 @@ export function AssignTaskPage() {
                     variant="primary"
                     size="sm"
                     onClick={() => handleAssign(task.id, employee._id.toString())}
-                    className="bg-gray-800 text-white px-4 py-2 rounded-md border border-gray-600 hover:bg-gray-700"
+                    className="bg-gray-200 text-gray-900 px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-300"
                   >
                     <div className="flex items-center space-x-2">
-                      <Avatar className="h-6 w-6 rounded-full ring-2 ring-gray-600">
+                      <Avatar className="h-6 w-6 rounded-full ring-2 ring-gray-300">
                         <AvatarImage src={employee.avatar} alt={employee.fname[0] + employee.lname[0]} />
-                        <AvatarFallback className="bg-gray-900 text-white">
+                        <AvatarFallback className="bg-gray-200 text-gray-900">
                           {employee.fname[0] + employee.lname[0]}
                         </AvatarFallback>
                       </Avatar>
@@ -93,16 +93,16 @@ export function AssignTaskPage() {
               </div>
 
               <Select onValueChange={(value) => handleAssign(task._id, value)}>
-                <SelectTrigger className="bg-gray-800 text-white border border-gray-600 rounded-md hover:bg-gray-700">
+                <SelectTrigger className="bg-gray-100 text-gray-900 border border-gray-300 rounded-md hover:bg-gray-200">
                   <SelectValue placeholder="Select other team members..." />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-800 text-white border border-gray-600 rounded-md">
+                <SelectContent className="bg-gray-100 text-gray-900 border border-gray-300 rounded-md">
                   {teamMembers.map((member) => (
                     <SelectItem key={member._id} value={member._id.toString()}>
                       <div className="flex items-center space-x-3">
                         <Avatar className="h-6 w-6 rounded-full">
                           <AvatarImage src={member.avatar} alt={member.fname[0] + member.lname[0]} />
-                          <AvatarFallback className="bg-gray-900 text-white">
+                          <AvatarFallback className="bg-gray-200 text-gray-900">
                             {member.fname[0] + member.lname[0]}
                           </AvatarFallback>
                         </Avatar>
@@ -118,7 +118,7 @@ export function AssignTaskPage() {
               {assignments[task.id] && (() => {
                 const member = teamMembers.find((m) => m._id.toString() === assignments[task._id]);
                 return (
-                  <p className="text-sm text-gray-400">
+                  <p className="text-sm text-gray-600">
                     Assigning to: {member ? `${member.fname} ${member.lname}` : 'Unknown'}
                   </p>
                 );

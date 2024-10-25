@@ -32,29 +32,29 @@ export function TeamPage() {
 
   return (
     <div className="space-y-8">
-      <h2 className="text-4xl font-extrabold tracking-tight text-white">Team Overview</h2>
+      <h2 className="text-4xl font-extrabold tracking-tight text-gray-900">Team Overview</h2>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {teamMembers.map((member) => (
-          <Card key={member.email} className="bg-[#111] text-white border border-gray-700 shadow-xl hover:shadow-2xl transform transition-transform hover:-translate-y-2">
+          <Card key={member.email} className="bg-white text-gray-900 border border-gray-200 shadow-xl hover:shadow-2xl transform transition-transform hover:-translate-y-2">
             <CardHeader className="flex flex-row items-center space-y-0 pb-2">
-              <Avatar className="h-14 w-14 rounded-full ring-2 ring-gray-600">
+              <Avatar className="h-14 w-14 rounded-full ring-2 ring-gray-300">
                 <AvatarImage src={member.avatar} alt={member.name} />
-                <AvatarFallback className="bg-gray-800 text-white text-lg font-bold">
+                <AvatarFallback className="bg-gray-200 text-gray-900 text-lg font-bold">
                   {member.fname[0] + member.lname[0]}
                 </AvatarFallback>
               </Avatar>
               <div className="ml-4">
-                <CardTitle className="text-xl font-semibold text-white">{member.fname + " " + member.lname}</CardTitle>
-                <p className="text-sm text-gray-400">{member.email}</p>
+                <CardTitle className="text-xl font-semibold text-gray-900">{member.fname + " " + member.lname}</CardTitle>
+                <p className="text-sm text-gray-500">{member.email}</p>
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="flex justify-between items-center">
                 <span className="text-sm font-medium">Previously done tasks</span>
-                <span className="text-sm text-gray-400">{member.pastTasks.length}</span>
+                <span className="text-sm text-gray-500">{member.pastTasks.length}</span>
               </div>
-              <Progress value={(member.pastTasks.length / member.totalTasks) * 100} className="h-2 bg-gray-800 rounded-md" />
-              <div className="text-sm text-gray-400">
+              <Progress value={(member.pastTasks.length / member.totalTasks) * 100} className="h-2 bg-gray-200 rounded-md" />
+              <div className="text-sm text-gray-500">
                 Completion rate: {((member.pastTasks.length / member.totalTasks) * 100).toFixed(1)}%
               </div>
             </CardContent>

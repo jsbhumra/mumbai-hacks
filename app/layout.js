@@ -14,7 +14,7 @@ const geistMono = localFont({
 });
 
 export const metadata = {
-  title: "SummaryIQ",
+  title: "GenAI Task Management",
   description: "Productivity Track for Mumbai Hacks",
 };
 
