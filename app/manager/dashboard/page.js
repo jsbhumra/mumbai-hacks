@@ -14,11 +14,12 @@ import {
 } from "chart.js";
 import { Bell, LayoutDashboard, UserCircle, ClipboardList } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TeamPage } from "@/components/team-page";
-import { AddTaskButton } from "@/components/add-task-button";
 import { AssignTaskPage } from "@/components/assign-task-page";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 ChartJS.register(
   CategoryScale,
@@ -143,7 +144,11 @@ export default function ManagerDashboard() {
         </nav>
         <main className="flex-1 p-8 space-y-8">{renderPage()}</main>
       </div>
-      <AddTaskButton />
+      <Link href="/manager/dashboard/task">
+        <Button className="fixed bottom-6 right-6 rounded-full h-16 w-16">
+          <Plus className="h-6 w-6" />
+        </Button>
+      </Link>
     </div>
   );
 }
