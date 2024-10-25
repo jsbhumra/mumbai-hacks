@@ -62,28 +62,25 @@ export default function BugFeatureEntry() {
     }));
   };
 
-  const handleRefineAi = () => {
-    // Simulating AI response
-    setTimeout(() => {
-      const aiSuggestion = {
-        title: "Login page not responsive",
-        description:
-          "The login page is not displaying correctly on mobile devices",
-        priority: "high",
-        deadline: "2023-06-30",
-        stepsToReproduce:
-          "1. Open the login page on a mobile device\n2. Observe the layout",
-        expectedBehavior:
-          "The login form should be centered and all elements should be visible",
-        actualBehavior:
-          "The login form is cut off on the right side and some fields are not visible",
-        expectedOutcome:
-          "A fully responsive login page that works on all device sizes",
-        tags: ["mobile", "responsive", "login"],
-      };
-      setFormData((prev) => ({ ...prev, ...aiSuggestion }));
-    }, 1000);
+  const handleRefineAi = async () => {
+    try {
+      const response = await fetch("/api/refineData", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to refine data");
+      }
+      
+      const refinedData = await response.json();
+      setFormData((prev) => ({ ...prev, ...refinedData }));
+    } catch (error) {
+      console.error("Error refining data:", error);
+    }
   };
+  
 
   const CommonFields = () => (
     <>
