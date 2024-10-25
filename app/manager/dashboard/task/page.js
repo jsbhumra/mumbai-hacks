@@ -49,9 +49,9 @@ const FormSelect = memo(({ label, value, onValueChange }) => (
         <SelectValue placeholder="Select priority" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="low">Low</SelectItem>
-        <SelectItem value="medium">Medium</SelectItem>
-        <SelectItem value="high">High</SelectItem>
+        <SelectItem value="LOW">Low</SelectItem>
+        <SelectItem value="MEDIUM">Medium</SelectItem>
+        <SelectItem value="HIGH">High</SelectItem>
       </SelectContent>
     </Select>
   </div>
@@ -173,11 +173,12 @@ const FeatureFields = memo(({ formData, onInputChange }) => (
 FeatureFields.displayName = "FeatureFields";
 
 export default function BugFeatureEntry() {
-  const [activeTab, setActiveTab] = useState("bug");
+  const [activeTab, setActiveTab] = useState("BUG");
   const [formData, setFormData] = useState({
+    activeTab: activeTab,
     title: "",
     description: "",
-    priority: "",
+    priority: "LOW",
     deadline: "",
     stepsToReproduce: "",
     expectedBehavior: "",
@@ -194,6 +195,9 @@ export default function BugFeatureEntry() {
         method: "POST",
         body: JSON.stringify(formData),
       });
+
+      const res = await response.json()
+      console.log(res)
     } catch (error) {}
   };
 
@@ -220,6 +224,7 @@ export default function BugFeatureEntry() {
   const handleRefineAi = async (e) => {
     e.preventDefault();
     const result = await JSON.parse(await refineDataWithGemini(formData));
+    // console.log(result)
     setFormData(result);
   };
 
@@ -231,10 +236,10 @@ export default function BugFeatureEntry() {
       <CardContent>
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="bug">Bug</TabsTrigger>
-            <TabsTrigger value="feature">Feature</TabsTrigger>
+            <TabsTrigger value="BUG">Bug</TabsTrigger>
+            <TabsTrigger value="FEATURE">Feature</TabsTrigger>
           </TabsList>
-          <TabsContent value="bug">
+          <TabsContent value="BUG">
             <form onSubmit={handleSubmit}>
               <CommonFields
                 formData={formData}
@@ -259,7 +264,7 @@ export default function BugFeatureEntry() {
               </CardFooter>
             </form>
           </TabsContent>
-          <TabsContent value="feature">
+          <TabsContent value="FEATURE">
             <form onSubmit={handleSubmit}>
               <CommonFields
                 formData={formData}
