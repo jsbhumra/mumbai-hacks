@@ -96,6 +96,7 @@ export default function BugFeatureEntry() {
             value={formData.title}
             onChange={handleInputChange}
             placeholder="Enter title"
+            className="bg-black text-white border-white focus:ring-2 focus:ring-gray-500"
           />
         </div>
         <div className="flex flex-col space-y-1.5">
@@ -106,6 +107,7 @@ export default function BugFeatureEntry() {
             value={formData.description}
             onChange={handleInputChange}
             placeholder="Enter description"
+            className="bg-black text-white border-white focus:ring-2 focus:ring-gray-500"
           />
         </div>
         <div className="flex flex-col space-y-1.5">
@@ -116,10 +118,10 @@ export default function BugFeatureEntry() {
               setFormData((prev) => ({ ...prev, priority: value }))
             }
           >
-            <SelectTrigger id="priority">
+            <SelectTrigger id="priority" className="bg-black text-white border-white">
               <SelectValue placeholder="Select priority" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-black text-white">
               <SelectItem value="low">Low</SelectItem>
               <SelectItem value="medium">Medium</SelectItem>
               <SelectItem value="high">High</SelectItem>
@@ -134,13 +136,18 @@ export default function BugFeatureEntry() {
             type="date"
             value={formData.deadline}
             onChange={handleInputChange}
+            className="bg-black text-white border-white focus:ring-2 focus:ring-gray-500"
           />
         </div>
         <div className="flex flex-col space-y-1.5">
           <Label htmlFor="tags">Tags</Label>
           <div className="flex flex-wrap gap-2 mb-2">
             {formData.tags.map((tag, index) => (
-              <Badge key={index} variant="secondary" className="px-2 py-1">
+              <Badge
+                key={index}
+                variant="secondary"
+                className="px-2 py-1 bg-gray-800 text-white border-white"
+              >
                 {tag}
                 <button onClick={() => removeTag(tag)} className="ml-2 text-xs">
                   &times;
@@ -152,6 +159,7 @@ export default function BugFeatureEntry() {
             id="tags"
             placeholder="Enter tags (press Enter to add)"
             onKeyDown={handleTagInput}
+            className="bg-black text-white border-white focus:ring-2 focus:ring-gray-500"
           />
         </div>
       </div>
@@ -159,15 +167,25 @@ export default function BugFeatureEntry() {
   );
 
   return (
-    <Card className="w-2/3 mx-auto mt-8">
+    <Card className="w-2/3 mx-auto mt-8 bg-black text-white border border-white shadow-xl">
       <CardHeader>
-        <CardTitle>Bug / Feature Entry</CardTitle>
+        <CardTitle className="text-3xl font-bold">Bug / Feature Entry</CardTitle>
       </CardHeader>
       <CardContent>
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="bug">Bug</TabsTrigger>
-            <TabsTrigger value="feature">Feature</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 bg-gray-800">
+            <TabsTrigger
+              value="bug"
+              className="text-white hover:bg-white hover:text-black transition-all"
+            >
+              Bug
+            </TabsTrigger>
+            <TabsTrigger
+              value="feature"
+              className="text-white hover:bg-white hover:text-black transition-all"
+            >
+              Feature
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="bug">
             <form onSubmit={handleSubmit}>
@@ -181,6 +199,7 @@ export default function BugFeatureEntry() {
                     value={formData.stepsToReproduce}
                     onChange={handleInputChange}
                     placeholder="Enter steps to reproduce"
+                    className="bg-black text-white border-white focus:ring-2 focus:ring-gray-500"
                   />
                 </div>
                 <div className="flex flex-col space-y-1.5">
@@ -191,6 +210,7 @@ export default function BugFeatureEntry() {
                     value={formData.expectedBehavior}
                     onChange={handleInputChange}
                     placeholder="Enter expected behavior"
+                    className="bg-black text-white border-white focus:ring-2 focus:ring-gray-500"
                   />
                 </div>
                 <div className="flex flex-col space-y-1.5">
@@ -201,12 +221,19 @@ export default function BugFeatureEntry() {
                     value={formData.actualBehavior}
                     onChange={handleInputChange}
                     placeholder="Enter actual behavior"
+                    className="bg-black text-white border-white focus:ring-2 focus:ring-gray-500"
                   />
                 </div>
               </div>
               <CardFooter className="flex justify-between mt-6">
-                <Button type="submit">Submit Bug</Button>
-                <Button variant="outline" onClick={handleRefineAi}>
+                <Button type="submit" className="bg-white text-black hover:bg-gray-300">
+                  Submit Bug
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleRefineAi}
+                  className="border-white text-black hover:bg-gray-700"
+                >
                   Refine AI
                 </Button>
               </CardFooter>
@@ -229,7 +256,7 @@ export default function BugFeatureEntry() {
               </div>
               <CardFooter className="flex justify-between mt-6">
                 <Button type="submit">Submit Feature</Button>
-                <Button variant="outline" onClick={handleRefineAi}>
+                <Button variant="outline" onClick={handleRefineAi}  className="border-white text-black hover:bg-gray-700">
                   Refine AI
                 </Button>
               </CardFooter>

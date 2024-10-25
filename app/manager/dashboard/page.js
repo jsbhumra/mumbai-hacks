@@ -39,9 +39,9 @@ export default function ManagerDashboard() {
     labels: ["To Do", "In Progress", "Review", "Done"],
     datasets: [
       {
-        label: "Number of Tasks",
+        label: "Tasks",
         data: [12, 19, 3, 5],
-        backgroundColor: ["#ff6384", "#36a2eb", "#ffce56", "#4bc0c0"],
+        backgroundColor: ["#e74c3c", "#3498db", "#f1c40f", "#2ecc71"],
       },
     ],
   };
@@ -49,8 +49,16 @@ export default function ManagerDashboard() {
   const chartOptions = {
     responsive: true,
     plugins: {
-      legend: { position: "top" },
-      title: { display: true, text: "Task Distribution" },
+      legend: { position: "top", labels: { color: "#fff" } },
+      title: {
+        display: true,
+        text: "Task Progress Overview",
+        color: "#fff",
+      },
+    },
+    scales: {
+      x: { ticks: { color: "#fff" } },
+      y: { ticks: { color: "#fff" } },
     },
   };
 
@@ -63,22 +71,22 @@ export default function ManagerDashboard() {
       default:
         return (
           <>
-            <section className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-              {/* Summary cards with refined design */}
-              <Card className="shadow-lg bg-gradient-to-r from-blue-500 to-purple-500 text-white">
-                <CardHeader>
-                  <CardTitle>Tasks Summary</CardTitle>
-                </CardHeader>
-                <CardContent className="text-lg font-semibold">
-                  Ongoing Tasks: 25
-                </CardContent>
-              </Card>
-              {/* More cards for other metrics */}
+            <section className="flex justify-center">
+              <div className="grid gap-6 md:grid-cols-4 lg:grid-cols-0">
+                <Card className="bg-black text-white shadow-lg border border-gray-300 hover:shadow-2xl transform transition-transform hover:-translate-y-1">
+                  <CardHeader>
+                    <CardTitle className="text-lg font-bold">Ongoing Tasks</CardTitle>
+                  </CardHeader>
+                  <CardContent className="text-4xl font-semibold">25</CardContent>
+                </Card>
+                {/* You can add more cards here */}
+              </div>
+              {/* Add more cards here */}
             </section>
             <section className="grid gap-6 md:grid-cols-2">
-              <Card className="shadow-lg bg-white border border-gray-200 rounded-lg">
+              <Card className="bg-black shadow-lg border-none rounded-lg">
                 <CardHeader className="border-b">
-                  <CardTitle className="text-lg font-bold text-gray-700">
+                  <CardTitle className="text-xl font-bold text-white">
                     Task Overview
                   </CardTitle>
                 </CardHeader>
@@ -86,7 +94,18 @@ export default function ManagerDashboard() {
                   <Bar data={chartData} options={chartOptions} />
                 </CardContent>
               </Card>
-              {/* Additional card for team performance or other metrics */}
+
+              {/* Add a card for project activity */}
+              <Card className="bg-black shadow-lg border-none rounded-lg">
+                <CardHeader className="border-b">
+                  <CardTitle className="text-xl font-bold text-white">
+                    Team Performance
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <p className="text-lg text-gray-300">Performance overview here...</p>
+                </CardContent>
+              </Card>
             </section>
           </>
         );
@@ -94,12 +113,12 @@ export default function ManagerDashboard() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
-      <header className="flex items-center justify-between px-8 py-5 bg-white shadow-md">
+    <div className="flex flex-col min-h-screen bg-black text-gray-100">
+      <header className="flex items-center justify-between px-8 py-5 bg-black shadow-md">
         <h1 className="text-3xl font-bold">GenAI Task Management</h1>
         <div className="flex items-center space-x-4">
           <Button variant="ghost" size="icon">
-            <Bell className="h-6 w-6" />
+            <Bell className="h-6 w-6 text-white" />
           </Button>
           <Avatar>
             <AvatarImage src="/placeholder-avatar.jpg" alt="Manager" />
@@ -107,34 +126,34 @@ export default function ManagerDashboard() {
           </Avatar>
         </div>
       </header>
+
       <div className="flex flex-1">
-        <nav className="w-64 p-4 bg-white text-gray-700">
+        <nav className="w-64 p-4 bg-black text-gray-300">
           <div className="space-y-4">
             <Button
               variant={currentPage === "dashboard" ? "secondary" : "ghost"}
-              className={`w-full justify-start ${
-                currentPage === "dashboard" ? "text-blue-700" : "text-gray-700"
-              }`}
+              className={`w-full justify-start ${currentPage === "dashboard" ? "text-blue-300" : "text-gray-300"
+                }`}
               onClick={() => setCurrentPage("dashboard")}
             >
               <LayoutDashboard className="mr-3 h-5 w-5" />
               Dashboard
             </Button>
+
             <Button
               variant={currentPage === "team" ? "secondary" : "ghost"}
-              className={`w-full justify-start ${
-                currentPage === "team" ? "text-blue-700" : "text-gray-700"
-              }`}
+              className={`w-full justify-start ${currentPage === "team" ? "text-blue-300" : "text-gray-300"
+                }`}
               onClick={() => setCurrentPage("team")}
             >
               <UserCircle className="mr-3 h-5 w-5" />
               Team
             </Button>
+
             <Button
               variant={currentPage === "assign" ? "secondary" : "ghost"}
-              className={`w-full justify-start ${
-                currentPage === "assign" ? "text-blue-700" : "text-gray-700"
-              }`}
+              className={`w-full justify-start ${currentPage === "assign" ? "text-blue-300" : "text-gray-300"
+                }`}
               onClick={() => setCurrentPage("assign")}
             >
               <ClipboardList className="mr-3 h-5 w-5" />
@@ -142,11 +161,13 @@ export default function ManagerDashboard() {
             </Button>
           </div>
         </nav>
+
         <main className="flex-1 p-8 space-y-8">{renderPage()}</main>
       </div>
+
       <Link href="/manager/dashboard/task">
-        <Button className="fixed bottom-6 right-6 rounded-full h-16 w-16">
-          <Plus className="h-6 w-6" />
+        <Button className="fixed bottom-6 right-6 rounded-full h-16 w-16 bg-blue-500 hover:bg-blue-600">
+          <Plus className="h-6 w-6 text-white" />
         </Button>
       </Link>
     </div>
