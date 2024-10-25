@@ -21,6 +21,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { refineDataWithGemini } from "@/utils/refineDataWithGemini";
+import axios from "axios";
 
 // Memoized form field components
 const FormInput = memo(({ label, ...props }) => (
@@ -184,9 +186,15 @@ export default function BugFeatureEntry() {
     tags: [],
   });
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     console.log("Form submitted:", formData);
+    try {
+      const response = await fetch("/api/task", {
+        method: "POST",
+        body: JSON.stringify(formData),
+      });
+    } catch (error) {}
   };
 
   const handleInputChange = (e) => {
@@ -209,25 +217,11 @@ export default function BugFeatureEntry() {
     }));
   };
 
-  const handleRefineAi = async () => {
-    try {
-      const response = await fetch("/api/refineData", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      
-      if (!response.ok) {
-        throw new Error("Failed to refine data");
-      }
-      
-      const refinedData = await response.json();
-      setFormData((prev) => ({ ...prev, ...refinedData }));
-    } catch (error) {
-      console.error("Error refining data:", error);
-    }
+  const handleRefineAi = async (e) => {
+    e.preventDefault();
+    const result = await JSON.parse(await refineDataWithGemini(formData));
+    setFormData(result);
   };
-  
 
   return (
     <Card className="w-2/3 mx-auto mt-8">
@@ -255,7 +249,11 @@ export default function BugFeatureEntry() {
               />
               <CardFooter className="flex justify-between mt-6">
                 <Button type="submit">Submit Bug</Button>
-                <Button variant="outline" onClick={handleRefineAi}>
+                <Button
+                  variant="outline"
+                  type="button"
+                  onClick={handleRefineAi}
+                >
                   Refine AI
                 </Button>
               </CardFooter>
@@ -276,7 +274,11 @@ export default function BugFeatureEntry() {
               />
               <CardFooter className="flex justify-between mt-6">
                 <Button type="submit">Submit Feature</Button>
-                <Button variant="outline" onClick={handleRefineAi}>
+                <Button
+                  variant="outline"
+                  type="button"
+                  onClick={handleRefineAi}
+                >
                   Refine AI
                 </Button>
               </CardFooter>
