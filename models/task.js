@@ -24,12 +24,12 @@ const baseTaskFields = {
   },
   deadline: {
     type: Date,
-    required: true,
+    // required: true,
   },
   createdBy: {
     type: Schema.Types.ObjectId,
     ref: "User",
-    required: true,
+    // required: true,
   },
   assignedTo: {
     type: Schema.Types.ObjectId,
@@ -78,6 +78,7 @@ const featureFields = {
   },
 };
 
+// Define the schema
 const taskSchema = new Schema(
   {
     ...baseTaskFields,
@@ -93,18 +94,18 @@ const taskSchema = new Schema(
 // Middleware to validate fields based on taskType
 taskSchema.pre("save", function (next) {
   if (this.taskType === "BUG") {
-    if (!this.severity || !this.expectedBehavior || !this.actualBehavior) {
-      next(
+    if (!this.expectedBehavior || !this.actualBehavior) {
+      return next(
         new Error(
-          "Bug tasks require severity, expected behavior, and actual behavior"
+          "Bug tasks require expected behavior and actual behavior"
         )
       );
     }
   } else if (this.taskType === "FEATURE") {
-    if (!this.featureCategory || !this.businessValue || !this.estimatedEffort) {
-      next(
+    if (!this.expectedOutcome) {
+      return next(
         new Error(
-          "Feature tasks require category, business value, and estimated effort"
+          "Feature tasks require an expected outcome"
         )
       );
     }
@@ -112,11 +113,28 @@ taskSchema.pre("save", function (next) {
   next();
 });
 
-const Task = mongoose.model("Task", taskSchema);
+// Check if the models already exist to prevent OverwriteModelError
+let Task;
+let BugTask;
+let FeatureTask;
 
-// Create discriminators for specific task types
-const BugTask = Task.discriminator("BUG", new Schema({}));
-const FeatureTask = Task.discriminator("FEATURE", new Schema({}));
+if (mongoose.models.Task) {
+  Task = mongoose.model("Task");
+} else {
+  Task = mongoose.model("Task", taskSchema);
+}
+
+if (mongoose.models.BUG) {
+  BugTask = mongoose.models.BUG;
+} else {
+  BugTask = Task.discriminator("BUG", new Schema({}));
+}
+
+if (mongoose.models.FEATURE) {
+  FeatureTask = mongoose.models.FEATURE;
+} else {
+  FeatureTask = Task.discriminator("FEATURE", new Schema({}));
+}
 
 module.exports = {
   Task,
