@@ -45,6 +45,10 @@ export function AssignTaskPage() {
     getEmp()
   },[])
 
+  useEffect(()=>{
+    console.log(assignments)
+  },[assignments])
+
   const handleAssign = (taskId, memberId) => {
     setAssignments((prev) => ({ ...prev, [taskId]: memberId }));
   };
@@ -64,9 +68,9 @@ export function AssignTaskPage() {
                 {suggestedEmployees.length>0 && suggestedEmployees.map((employee) => (
                   <Button
                     key={employee._id}
-                    variant="secondary"
+                    variant="primary"
                     size="sm"
-                    onClick={() => handleAssign(task.id, employee.id)}
+                    onClick={() => handleAssign(task.id, employee._id.toString())}
                     className="px-3 py-1.5 border border-muted rounded-md hover:bg-muted"
                   >
                     <div className="flex items-center space-x-1">
@@ -79,7 +83,7 @@ export function AssignTaskPage() {
                   </Button>
                 ))}
               </div>
-              <Select onValueChange={(value) => handleAssign(task.id, parseInt(value))}>
+              <Select onValueChange={(value) => handleAssign(task.id, value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Other team members..." />
                 </SelectTrigger>
@@ -99,11 +103,14 @@ export function AssignTaskPage() {
               </Select>
             </CardContent>
             <CardFooter>
-              {assignments[task.id] && (
-                <p className="text-sm text-muted-foreground">
-                  Assigning to: {teamMembers.find((m) => m.id === assignments[task.id])?.name}
-                </p>
-              )}
+            {assignments[task.id] && (() => {
+                const member = teamMembers.find((m) => m._id.toString() === assignments[task.id]);
+                return (
+                  <p className="text-sm text-muted-foreground">
+                    Assigning to: {member ? `${member.fname} ${member.lname}` : ''}
+                  </p>
+                );
+              })()}
             </CardFooter>
           </Card>
         ))}
