@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Bell, CheckCircle, Clock, AlertCircle, ChevronRight } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -8,35 +8,37 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Badge } from "@/components/ui/badge"
+import { fetchAISuggestions } from "@/utils/fetchAISuggestions"
 
 // Mock data for the assigned task
 const assignedTask = {
   id: 1,
-  title: "Optimize Database Queries for User Authentication",
-  description: "Improve the performance of database queries related to user authentication to reduce login times and enhance overall system responsiveness.",
+  title: "Optimize Dashboard Page for User Authentication",
+  description: "Improve the homepage which is not loading related to user authentication to reduce login times and enhance overall system responsiveness.",
   status: "In Progress",
   dueDate: "2023-07-15",
   progress: 35,
 }
 
-// Mock AI-generated reasons and solutions
-const aiGeneratedContent = [
-  {
-    reason: "Inefficient SQL Queries",
-    solution: "Analyze and optimize SQL queries using indexing and query plan analysis. Consider using database-specific optimization techniques."
-  },
-  {
-    reason: "Lack of Caching Mechanism",
-    solution: "Implement a caching layer using Redis or Memcached to store frequently accessed user data and reduce database load."
-  },
-  {
-    reason: "Unoptimized Database Schema",
-    solution: "Review and normalize the database schema. Consider denormalization for frequently accessed data to improve query performance."
-  }
-]
-
 export default function UserDashboard() {
-  const [employeeName, setEmployeeName] = React.useState("Alex")
+  const [employeeName, setEmployeeName] = useState("Alex")
+  const [aiGeneratedContent, setAiGeneratedContent] = useState([])
+
+  
+  const fetchAiGeneratedContent = async () => {
+    try {
+      const resp = await fetchAISuggestions({ title: assignedTask.title, description: assignedTask.description })
+      console.log(resp);
+      const parsedData = JSON.parse(resp)
+      setAiGeneratedContent(parsedData.reasons || [])
+    } catch (error) {
+      console.error("Error fetching AI suggestions:", error)
+    }
+  }
+  
+  useEffect(() => {
+    fetchAiGeneratedContent()
+  }, [])
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800">
