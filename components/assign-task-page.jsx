@@ -11,6 +11,10 @@ const tasks = [
   { id: 4, title: "Optimize database queries", description: "Improve performance of slow-running database queries" },
 ];
 
+const suggestedEmployees = [
+  { _id:'1', fname: 'Meet', lname: 'Jain', email: 'meet@test.com' }
+]
+
 // const teamMembers = [
 //   { id: 1, name: "Olivia Martin", avatar: "/placeholder-avatar.jpg" },
 //   { id: 2, name: "Jackson Lee", avatar: "/placeholder-avatar.jpg" },
@@ -57,9 +61,9 @@ export function AssignTaskPage() {
             </CardHeader>
             <CardContent>
               <div className="flex items-center space-x-2 mb-4">
-                {suggestedEmployees.map((employee) => (
+                {suggestedEmployees.length>0 && suggestedEmployees.map((employee) => (
                   <Button
-                    key={employee.id}
+                    key={employee._id}
                     variant="secondary"
                     size="sm"
                     onClick={() => handleAssign(task.id, employee.id)}
@@ -67,10 +71,10 @@ export function AssignTaskPage() {
                   >
                     <div className="flex items-center space-x-1">
                       <Avatar className="h-5 w-5">
-                        <AvatarImage src={employee.avatar} alt={employee.name} />
-                        <AvatarFallback>{employee.name[0]}</AvatarFallback>
+                        <AvatarImage src={employee.avatar} alt={employee.fname[0]+employee.lname[0]} />
+                        <AvatarFallback>{employee.fname[0]+employee.lname[0]}</AvatarFallback>
                       </Avatar>
-                      <span className="text-sm">{employee.name}</span>
+                      <span className="text-sm">{employee.fname+' '+employee.lname}</span>
                     </div>
                   </Button>
                 ))}
@@ -83,7 +87,7 @@ export function AssignTaskPage() {
                   {teamMembers.map((member) => (
                     <SelectItem key={member._id} value={member._id.toString()}>
                       <div className="flex items-center">
-                        <Avatar className="h-8 w-8 mr-2">
+                        <Avatar className="h-7 w-7 mr-2">
                           <AvatarImage src={member.avatar} alt={member.fname[0]+member.lname[0]} />
                           <AvatarFallback>{member.fname[0]+member.lname[0]}</AvatarFallback>
                         </Avatar>
@@ -97,7 +101,7 @@ export function AssignTaskPage() {
             <CardFooter>
               {assignments[task.id] && (
                 <p className="text-sm text-muted-foreground">
-                  Assigned to: {teamMembers.find((m) => m.id === assignments[task.id])?.name}
+                  Assigning to: {teamMembers.find((m) => m.id === assignments[task.id])?.name}
                 </p>
               )}
             </CardFooter>
