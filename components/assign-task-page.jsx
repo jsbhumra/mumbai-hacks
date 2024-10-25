@@ -4,12 +4,12 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const tasks = [
-  { id: 1, title: "Implement user authentication", description: "Set up JWT-based authentication for the API" },
-  { id: 2, title: "Design dashboard UI", description: "Create a responsive dashboard layout using Figma" },
-  { id: 3, title: "Fix pagination bug", description: "Resolve issue with pagination on the search results page" },
-  { id: 4, title: "Optimize database queries", description: "Improve performance of slow-running database queries" },
-];
+// const tasks = [
+//   { id: 1, title: "Implement user authentication", description: "Set up JWT-based authentication for the API" },
+//   { id: 2, title: "Design dashboard UI", description: "Create a responsive dashboard layout using Figma" },
+//   { id: 3, title: "Fix pagination bug", description: "Resolve issue with pagination on the search results page" },
+//   { id: 4, title: "Optimize database queries", description: "Improve performance of slow-running database queries" },
+// ];
 
 const suggestedEmployees = [
   { _id: '1', fname: 'Meet', lname: 'Jain', email: 'meet@test.com' }
@@ -18,6 +18,7 @@ const suggestedEmployees = [
 export function AssignTaskPage() {
   const [assignments, setAssignments] = useState({});
   const [teamMembers, setTeamMembers] = useState([]);
+  const [tasks, setTasks] = useState([]);
 
   async function getEmp() {
     const response = await fetch(`/api/employees/available`, {
@@ -31,8 +32,23 @@ export function AssignTaskPage() {
     return data;
   }
 
+  async function getTasks() {
+    const response = await fetch(`/api/task/pending`, {
+      method: "GET",
+    });
+    const data = await response.json();
+    console.log(data)
+    setTasks(data);
+    if (!response.ok) {
+      throw new Error(data.message || "Something went wrong!");
+    }
+    return data;
+  }
+
   useEffect(() => {
     getEmp();
+    getTasks();
+    console.log(tasks)
   }, []);
 
   useEffect(() => {
@@ -48,7 +64,7 @@ export function AssignTaskPage() {
       <h2 className="text-4xl font-extrabold tracking-tight text-white">Assign Tasks</h2>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {tasks.map((task) => (
-          <Card key={task.id} className="bg-[#1a1a1a] text-white border border-gray-700 shadow-lg hover:shadow-2xl transform transition-transform hover:-translate-y-1">
+          <Card key={task._id} className="bg-[#1a1a1a] text-white border border-gray-700 shadow-lg hover:shadow-2xl transform transition-transform hover:-translate-y-1">
             <CardHeader>
               <CardTitle className="text-xl font-semibold text-white">{task.title}</CardTitle>
               <CardDescription className="text-gray-400">{task.description}</CardDescription>
@@ -76,7 +92,7 @@ export function AssignTaskPage() {
                 ))}
               </div>
 
-              <Select onValueChange={(value) => handleAssign(task.id, value)}>
+              <Select onValueChange={(value) => handleAssign(task._id, value)}>
                 <SelectTrigger className="bg-gray-800 text-white border border-gray-600 rounded-md hover:bg-gray-700">
                   <SelectValue placeholder="Select other team members..." />
                 </SelectTrigger>
@@ -100,7 +116,7 @@ export function AssignTaskPage() {
 
             <CardFooter>
               {assignments[task.id] && (() => {
-                const member = teamMembers.find((m) => m._id.toString() === assignments[task.id]);
+                const member = teamMembers.find((m) => m._id.toString() === assignments[task._id]);
                 return (
                   <p className="text-sm text-gray-400">
                     Assigning to: {member ? `${member.fname} ${member.lname}` : 'Unknown'}
