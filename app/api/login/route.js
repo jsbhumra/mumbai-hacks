@@ -1,4 +1,4 @@
-import { dbConnect } from "@/utils/dbConnect";
+import { dbConnect } from "@/utils/db";
 import { compare, hash } from "bcryptjs";
 import User from "@/models/user";
 
