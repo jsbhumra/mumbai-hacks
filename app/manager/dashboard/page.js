@@ -1,5 +1,5 @@
 "use client";
-
+import { Trophy } from "lucide-react";
 import React from "react";
 import { useRouter } from "next/navigation";
 import { Bar } from "react-chartjs-2";
@@ -93,14 +93,24 @@ export default function ManagerDashboard() {
                 </CardContent>
               </Card>
 
+              {/* const topEmployee = {
+                fullName: "Olivia Martin",
+              tasksCompleted: 20,};  */}
+
               <Card className="bg-white shadow-lg border border-gray-200 rounded-lg">
                 <CardHeader className="border-b">
-                  <CardTitle className="text-xl font-bold text-gray-800">
+                  <CardTitle className="text-xl font-bold text-gray-800 flex items-center">
+                   {/* Trophy Icon */}
                     Team Performance
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6">
-                  <p className="text-lg text-gray-600">Performance overview here...</p>
+                <Trophy className="mr-2 h-16 w-16 text-yellow-500" /> 
+                  <div className="mt-14">
+                    <h3 className="text-lg font-semibold text-gray-800">Top Employee:</h3>
+                    <p className="text-md text-gray-600">Ritvik</p>
+                    {/* <p className="text-sm text-gray-500">Tasks Completed: {topEmployee.tasksCompleted}</p> */}
+                  </div>
                 </CardContent>
               </Card>
             </section>
