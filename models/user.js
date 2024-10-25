@@ -5,16 +5,46 @@ import { compare, hash } from "bcryptjs";
 var Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-  fname: { type: String, require: true },
-  lname: { type: String, require: true },
+  fname: { type: String, required: true },
+  lname: { type: String, required: true },
   email: {
     type: String,
-    require: true,
+    required: true,
     unique: [true, "Account already exists"],
     validate: [validator.isEmail, "Please enter a valid email"],
   },
-  password: { type: String, require: true },
+  password: { type: String, required: true },
+  type: {
+    type: String,
+    default: 'employee',
+    enum: ['manager', 'employee'],
+    required: true,
+  },
+  tags: {
+    type: [String],
+    default: [],
+  },
+  skills: {
+    type: [String],
+    default: [],
+  },
+  pastTasks: {
+    type: [Schema.Types.ObjectId],
+    ref: 'Task',
+    default: [],
+  },
+  availability: {
+    type: String,
+    enum: ['available', 'assigned', 'unavailable'],
+    default: 'available',
+  },
+  currentTask: {
+    type: Schema.Types.ObjectId,
+    ref: 'Task',
+    default: null,
+  },
 });
+
 
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
