@@ -1,30 +1,30 @@
-'use client'
-import { getSession, signIn, useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+"use client";
+import { getSession, signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function SignIn() {
-    const router = useRouter()
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const { data, status } = useSession()
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const { data, status } = useSession();
 
   const handleSubmit = async (e) => {
-      e.preventDefault();
+    e.preventDefault();
 
-    await signIn('credentials', {
+    await signIn("credentials", {
       redirect: false,
       email,
       password,
     });
   };
 
-  useEffect(()=>{
-    if(data) router.replace('/dashboard')
-  },[data])
+  useEffect(() => {
+    if (data) router.replace("/dashboard");
+  }, [data]);
 
-  if(status=='loading') return(<div>Loading</div>)
+  if (status == "loading") return <div>Loading</div>;
 
   return (
     <div className="flex justify-center items-center h-screen">
@@ -46,7 +46,10 @@ export default function SignIn() {
             />
           </div>
           <div className="mb-6">
-            <label className="block text-sm font-medium mb-1" htmlFor="password">
+            <label
+              className="block text-sm font-medium mb-1"
+              htmlFor="password"
+            >
               Password
             </label>
             <input
