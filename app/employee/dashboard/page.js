@@ -26,6 +26,9 @@ import {
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 import { fetchAISuggestions } from "@/utils/fetchAISuggestions";
+import { useSession } from "next-auth/react";
+import axios from "axios";
+import BugTaskCard from "@/components/task-card";
 
 // Mock data for the assigned task
 const assignedTaskData = {
@@ -38,6 +41,7 @@ const assignedTaskData = {
 };
 
 function TaskStatus() {
+  const { data: session, status } = useSession();
   const [assignedTask, setAssignedTask] = useState({
     status: "Not Started", // Initial status
     progress: 0, // Assuming you have progress
@@ -49,12 +53,24 @@ function TaskStatus() {
       status: newStatus, // Update the status based on button clicked
     }));
   };
+  console.log(session);
+
+  const fetchCurrentTask = async () => {
+    const resp = await axios.get(
+      `http://localhost:3000/api/employees/current-task/${session.user._id}`
+    );
+    setAssignedTask(resp.data);
+  };
+  useEffect(() => {
+    if (session) fetchCurrentTask();
+  }, [session]);
+  console.log(assignedTask);
 
   return (
     <div className="lg:col-span-1">
       <Card className="shadow-lg">
         <CardHeader>
-          <CardTitle className="text-2xl">Task Status</CardTitle>
+          <CardTitle className="text-2xl">{assignedTask?.title}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -62,7 +78,9 @@ function TaskStatus() {
               <span className="font-medium">Current Status:</span>
               <Badge
                 variant={
-                  assignedTask.status === "In Progress" ? "default" : "secondary"
+                  assignedTask.status === "In Progress"
+                    ? "default"
+                    : "secondary"
                 }
               >
                 {assignedTask.status}
@@ -120,13 +138,18 @@ export default function UserDashboard() {
   const [employeeName, setEmployeeName] = useState("Alex");
   const [aiGeneratedContent, setAiGeneratedContent] = useState([]);
 
+  const [assignedTask, setAssignedTask] = useState({
+    status: "Not Started", // Initial status
+    progress: 0, // Assuming you have progress
+  });
+
   const fetchAiGeneratedContent = async () => {
     try {
       const resp = await fetchAISuggestions({
         title: assignedTaskData.title,
         description: assignedTaskData.description,
       });
-      console.log(resp);
+      // console.log(resp);
       const parsedData = JSON.parse(resp);
       setAiGeneratedContent(parsedData.reasons || []);
     } catch (error) {
@@ -162,56 +185,7 @@ export default function UserDashboard() {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-2xl">Your Current Task</CardTitle>
-                <CardDescription>
-                  Focus on this to meet your deadline
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <h3 className="text-xl font-semibold mb-2">
-                  {assignedTaskData.title}
-                </h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  {assignedTaskData.description}
-                </p>
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center space-x-2">
-                    <Clock className="h-5 w-5 text-blue-500" />
-                    <span className="text-sm font-medium">
-                      Due: {assignedTaskData.dueDate}
-                    </span>
-                  </div>
-                  <Progress value={assignedTaskData.progress} className="w-1/3" />
-                </div>
-                <div className="mt-6">
-                  <h4 className="text-lg font-semibold mb-3">
-                    Common Issues & Solutions
-                  </h4>
-                  <TooltipProvider>
-                    <div className="space-y-2">
-                      {aiGeneratedContent.map((item, index) => (
-                        <Tooltip key={index}>
-                          <TooltipTrigger asChild>
-                            <div className="flex items-center space-x-2 p-2 rounded-md bg-gray-100 dark:bg-gray-700 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
-                              <AlertCircle className="h-5 w-5 text-yellow-500" />
-                              <span className="text-sm font-medium">
-                                {item.reason}
-                              </span>
-                              <ChevronRight className="h-4 w-4 ml-auto" />
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent side="right" className="max-w-sm">
-                            <p>{item.solution}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      ))}
-                    </div>
-                  </TooltipProvider>
-                </div>
-              </CardContent>
-            </Card>
+            <BugTaskCard task={assignedTask} />
           </div>
 
           {/* Include the TaskStatus component here */}

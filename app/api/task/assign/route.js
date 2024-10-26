@@ -25,7 +25,7 @@ export async function POST(request) {
 
     const updatedUser = await User.findByIdAndUpdate(
       memberId,
-      { availability: "assigned" },
+      { availability: "assigned", currentTask: taskId },
       { new: true }
     );
 
