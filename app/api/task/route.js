@@ -4,6 +4,7 @@ const { Task, BugTask, FeatureTask } = require("@/models/task");
 export async function POST(request) {
   dbConnect();
   const body = await request.json();
+  console.log(body)
   const { title, description, priority, deadline, createdBy, tags, activeTab, stepsToReproduce, expectedBehavior, actualBehavior, expectedOutcome } = body;
 
   try {

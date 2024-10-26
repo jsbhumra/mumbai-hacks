@@ -23,6 +23,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { refineDataWithGemini } from "@/utils/refineDataWithGemini";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 // Memoized form field components
 const FormInput = memo(({ label, ...props }) => (
@@ -32,6 +33,18 @@ const FormInput = memo(({ label, ...props }) => (
   </div>
 ));
 FormInput.displayName = "FormInput";
+
+const defaultFormData = {
+  title: "",
+  description: "",
+  priority: "LOW",
+  deadline: "",
+  stepsToReproduce: "",
+  expectedBehavior: "",
+  actualBehavior: "",
+  expectedOutcome: "",
+  tags: [],
+}
 
 const FormTextarea = memo(({ label, ...props }) => (
   <div className="flex flex-col space-y-1.5">
@@ -173,31 +186,31 @@ const FeatureFields = memo(({ formData, onInputChange }) => (
 FeatureFields.displayName = "FeatureFields";
 
 export default function BugFeatureEntry() {
+  const router = useRouter()
   const [activeTab, setActiveTab] = useState("BUG");
-  const [formData, setFormData] = useState({
-    activeTab: activeTab,
-    title: "",
-    description: "",
-    priority: "LOW",
-    deadline: "",
-    stepsToReproduce: "",
-    expectedBehavior: "",
-    actualBehavior: "",
-    expectedOutcome: "",
-    tags: [],
-  });
+  const [formData, setFormData] = useState(defaultFormData);
+
+  const changeActiveTab = (e) => {
+    // e.preventDefault()
+    setActiveTab(e.value)
+    setFormData(defaultFormData)
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     console.log("Form submitted:", formData);
+    const temp = formData
+    temp['activeTab'] = activeTab
+    console.log(temp)
     try {
       const response = await fetch("/api/task", {
         method: "POST",
-        body: JSON.stringify(formData),
+        body: JSON.stringify(temp),
       });
 
       const res = await response.json()
       console.log(res)
+      router.back()
     } catch (error) {}
   };
 
@@ -223,7 +236,10 @@ export default function BugFeatureEntry() {
 
   const handleRefineAi = async (e) => {
     e.preventDefault();
-    const result = await JSON.parse(await refineDataWithGemini(formData));
+    console.log(JSON.stringify(formData))
+    const temp = formData
+    temp['activeTab'] = activeTab
+    const result = await JSON.parse(await refineDataWithGemini(temp));
     // console.log(result)
     setFormData(result);
   };
@@ -234,7 +250,7 @@ export default function BugFeatureEntry() {
         <CardTitle>Bug / Feature Entry</CardTitle>
       </CardHeader>
       <CardContent>
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <Tabs value={activeTab} onValueChange={changeActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="BUG">Bug</TabsTrigger>
             <TabsTrigger value="FEATURE">Feature</TabsTrigger>

@@ -12,7 +12,7 @@ export async function refineDataWithGemini(data) {
             parts: [
               {
                 text:
-                  "Refine the content of title and description fields below. Treat the whole object as a task in a software development company workflow: " +
+                  "Refine the content of all fields below. Also set a suitable deadline according to expected time it will take to complete the task (use yyyy-MM-dd format, and use current date as 2024-10-26). Treat the whole object as a task in a software development company workflow. The task type is given in the 'activeTab' field of the JSON object, refine it accordingly: " +
                   JSON.stringify(data),
               },
             ],
