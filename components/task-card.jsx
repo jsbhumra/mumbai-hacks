@@ -76,9 +76,10 @@ export default function BugTaskCard({ task }) {
         <div>
           <h3 className="text-sm font-medium mb-2">Steps to Reproduce:</h3>
           <ol className="list-decimal list-inside text-sm text-muted-foreground">
-            {task.stepsToReproduce?.split(",").map((step, index) => (
+            {task.stepsToReproduce ? String(task.stepsToReproduce).split(",").map((step, index) => (
               <li key={index}>{step}</li>
-            ))}
+            )) : <li>No steps provided</li>}
+
           </ol>
         </div>
         <div>
