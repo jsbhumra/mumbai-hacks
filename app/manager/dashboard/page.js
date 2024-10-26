@@ -47,7 +47,7 @@ export default function ManagerDashboard() {
 
   // Chart data
   const chartData = {
-    labels: ["To Do", "In Progress", "Review", "Done"],
+    labels: ["To Do", "In Progress", "Done", "Canceled"],
     datasets: [
       {
         label: "Tasks",

@@ -2,17 +2,18 @@ import { Task } from "@/models/task";
 import User from "@/models/user";
 import { dbConnect } from "@/utils/db";
 
+
 export async function POST(request) {
   await dbConnect(); // Ensure the database connection is established
 
-  const { taskId, memberId } = await request.json();
+  const { userId, taskId } = await request.json();
 
   try {
     const updatedTask = await Task.findByIdAndUpdate(
       taskId,
       {
-        assignedTo: memberId,
-        status: "IN_PROGRESS",
+        assignedTo: userId,
+        status: "COMPLETED",
       },
       { new: true }
     );
@@ -23,10 +24,10 @@ export async function POST(request) {
         headers: { "Content-Type": "application/json" }, // Add header for JSON response
       });
     }
-
+    console.log(userId)
     const updatedUser = await User.findByIdAndUpdate(
-      memberId,
-      { availability: "assigned", currentTask: taskId },
+      userId,
+      { availability: "available", currentTask: null },
       { new: true }
     );
 
@@ -38,7 +39,7 @@ export async function POST(request) {
     }
 
     return new Response(
-      JSON.stringify({ message: "Task assigned successfully", updatedTask }),
+      JSON.stringify({ message: "Task completed successfully", updatedTask }),
       {
         status: 200,
         headers: { "Content-Type": "application/json" }, // Add header for JSON response

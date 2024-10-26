@@ -15,9 +15,30 @@ import { fetchAISuggestions } from "@/utils/fetchAISuggestions";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import BugTaskCard from "@/components/task-card";
+import { useRouter } from "next/navigation";
 
 // TaskStatus component with props
 function TaskStatus({ assignedTask, handleStatusChange }) {
+  const { data, status } = useSession();
+  const updateTask = async () => {
+    console.log(data?.user?._id)
+    try {
+      const resp = await fetch(`/api/task/complete`,{
+        method: 'POST',
+        body: JSON.stringify({
+          userId: data?.user?._id,
+          taskId: assignedTask?._id
+        })
+      })
+      const res= await resp.json()
+      console.log(res)
+    } catch (error) {
+      console.error("Error completing:", error);
+    }
+  }
+
+  if(status=='loading') return(<div>Loading</div>)
+
   return (
     <div className="lg:col-span-1">
       <Card className="shadow-lg h-full">
@@ -38,7 +59,7 @@ function TaskStatus({ assignedTask, handleStatusChange }) {
                 {assignedTask.status}
               </Badge>
             </div>
-            <div className="space-y-2">
+            {assignedTask.status!='COMPLETED' && <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600 dark:text-gray-300">
                   Click here when completed
@@ -48,14 +69,14 @@ function TaskStatus({ assignedTask, handleStatusChange }) {
                            
                 <Button
                   variant="outline"
-                  onClick={() => handleStatusChange("Completed")}
+                  onClick={updateTask}
                   className="w-full sm:w-auto"
                 >
                   Completed
                 </Button>
                 
               </div>
-            </div>
+            </div>}
           </div>
         </CardContent>
       </Card>
@@ -65,7 +86,8 @@ function TaskStatus({ assignedTask, handleStatusChange }) {
 
 // UserDashboard component as the parent
 export default function UserDashboard() {
-  const { data: session } = useSession();
+  const router = useRouter()
+  const { data, status } = useSession();
   const [employeeName, setEmployeeName] = useState("Alex");
   const [assignedTask, setAssignedTask] = useState({
     status: "Not Started", // Initial status
@@ -81,36 +103,39 @@ export default function UserDashboard() {
   };
 
   const fetchCurrentTask = async () => {
-    if (!session) return;
+    // if (!data) return;
     try {
       const resp = await axios.get(
-        `http://localhost:3000/api/employees/current-task/${session.user._id}`
+        `http://localhost:3000/api/employees/current-task/${data?.user?._id}`
       );
       setAssignedTask(resp.data);
     } catch (error) {
+      router.replace('/')
       console.error("Error fetching assigned task:", error);
     }
   };
 
   useEffect(() => {
-    fetchCurrentTask();
-  }, [session]);
+    if(data) fetchCurrentTask();
+  }, [data]);
 
-  useEffect(() => {
-    const fetchAiGeneratedContent = async () => {
-      try {
-        const resp = await fetchAISuggestions({
-          title: assignedTask.title,
-          description: assignedTask.description,
-        });
-        const parsedData = JSON.parse(resp);
-        setAiGeneratedContent(parsedData.reasons || []); // This line now works because setAiGeneratedContent is defined
-      } catch (error) {
-        console.error("Error fetching AI suggestions:", error);
-      }
-    };
-    if (assignedTask?.title) fetchAiGeneratedContent();
-  }, [assignedTask]);
+  // useEffect(() => {
+  //   const fetchAiGeneratedContent = async () => {
+  //     try {
+  //       const resp = await fetchAISuggestions({
+  //         title: assignedTask.title,
+  //         description: assignedTask.description,
+  //       });
+  //       const parsedData = JSON.parse(resp);
+  //       setAiGeneratedContent(parsedData.reasons || []); // This line now works because setAiGeneratedContent is defined
+  //     } catch (error) {
+  //       console.error("Error fetching AI suggestions:", error);
+  //     }
+  //   };
+  //   if (assignedTask?.title) fetchAiGeneratedContent();
+  // }, [assignedTask]);
+
+  if(status=='loading') return(<div>Loading</div>)
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800">
