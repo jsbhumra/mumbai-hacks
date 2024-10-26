@@ -1,44 +1,142 @@
 "use client";
 
-import React, { useEffect, useState } from "react"
-import { Bell, CheckCircle, Clock, AlertCircle, ChevronRight } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Badge } from "@/components/ui/badge"
-import { fetchAISuggestions } from "@/utils/fetchAISuggestions"
+import React, { useEffect, useState } from "react";
+import {
+  Bell,
+  CheckCircle,
+  Clock,
+  AlertCircle,
+  ChevronRight,
+} from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
+import { fetchAISuggestions } from "@/utils/fetchAISuggestions";
 
 // Mock data for the assigned task
-const assignedTask = {
+const assignedTaskData = {
   id: 1,
-  title: "Optimize Dashboard Page for User Authentication",
-  description: "Improve the homepage which is not loading related to user authentication to reduce login times and enhance overall system responsiveness.",
+  title: "What is the weather so bad in Bangalore?",
+  description: "Give reasons for bad weather.",
   status: "In Progress",
-  dueDate: "2023-07-15",
-  progress: 35,
+  dueDate: "2024-11-15",
+  progress: 55,
+};
+
+function TaskStatus() {
+  const [assignedTask, setAssignedTask] = useState({
+    status: "Not Started", // Initial status
+    progress: 0, // Assuming you have progress
+  });
+
+  const handleStatusChange = (newStatus) => {
+    setAssignedTask((prev) => ({
+      ...prev,
+      status: newStatus, // Update the status based on button clicked
+    }));
+  };
+
+  return (
+    <div className="lg:col-span-1">
+      <Card className="shadow-lg">
+        <CardHeader>
+          <CardTitle className="text-2xl">Task Status</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <span className="font-medium">Current Status:</span>
+              <Badge
+                variant={
+                  assignedTask.status === "In Progress" ? "default" : "secondary"
+                }
+              >
+                {assignedTask.status}
+              </Badge>
+            </div>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600 dark:text-gray-300">
+                  Status Options
+                </span>
+              </div>
+              <div className="flex space-x-2">
+                <Button
+                  variant="outline"
+                  onClick={() => handleStatusChange("Not Started")}
+                >
+                  Not Started
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => handleStatusChange("In Progress")}
+                >
+                  In Progress
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => handleStatusChange("Completed")}
+                >
+                  Completed
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => handleStatusChange("Blocked")}
+                >
+                  Blocked
+                </Button>
+              </div>
+            </div>
+            <div className="pt-4 border-t">
+              <h4 className="text-lg font-semibold mb-2">Next Steps</h4>
+              <ul className="list-disc list-inside space-y-1 text-sm text-gray-600 dark:text-gray-300">
+                <li>Review current database schema</li>
+                <li>Identify slow queries</li>
+                <li>Implement caching mechanism</li>
+              </ul>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
 }
 
 export default function UserDashboard() {
-  const [employeeName, setEmployeeName] = useState("Alex")
-  const [aiGeneratedContent, setAiGeneratedContent] = useState([])
+  const [employeeName, setEmployeeName] = useState("Alex");
+  const [aiGeneratedContent, setAiGeneratedContent] = useState([]);
 
-  
   const fetchAiGeneratedContent = async () => {
     try {
-      const resp = await fetchAISuggestions({ title: assignedTask.title, description: assignedTask.description })
+      const resp = await fetchAISuggestions({
+        title: assignedTaskData.title,
+        description: assignedTaskData.description,
+      });
       console.log(resp);
-      const parsedData = JSON.parse(resp)
-      setAiGeneratedContent(parsedData.reasons || [])
+      const parsedData = JSON.parse(resp);
+      setAiGeneratedContent(parsedData.reasons || []);
     } catch (error) {
-      console.error("Error fetching AI suggestions:", error)
+      console.error("Error fetching AI suggestions:", error);
     }
-  }
-  
+  };
+
   useEffect(() => {
-    fetchAiGeneratedContent()
-  }, [])
+    fetchAiGeneratedContent();
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800">
@@ -67,20 +165,30 @@ export default function UserDashboard() {
             <Card className="shadow-lg">
               <CardHeader>
                 <CardTitle className="text-2xl">Your Current Task</CardTitle>
-                <CardDescription>Focus on this to meet your deadline</CardDescription>
+                <CardDescription>
+                  Focus on this to meet your deadline
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <h3 className="text-xl font-semibold mb-2">{assignedTask.title}</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">{assignedTask.description}</p>
+                <h3 className="text-xl font-semibold mb-2">
+                  {assignedTaskData.title}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-4">
+                  {assignedTaskData.description}
+                </p>
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center space-x-2">
                     <Clock className="h-5 w-5 text-blue-500" />
-                    <span className="text-sm font-medium">Due: {assignedTask.dueDate}</span>
+                    <span className="text-sm font-medium">
+                      Due: {assignedTaskData.dueDate}
+                    </span>
                   </div>
-                  <Progress value={assignedTask.progress} className="w-1/3" />
+                  <Progress value={assignedTaskData.progress} className="w-1/3" />
                 </div>
                 <div className="mt-6">
-                  <h4 className="text-lg font-semibold mb-3">Common Issues & Solutions</h4>
+                  <h4 className="text-lg font-semibold mb-3">
+                    Common Issues & Solutions
+                  </h4>
                   <TooltipProvider>
                     <div className="space-y-2">
                       {aiGeneratedContent.map((item, index) => (
@@ -88,7 +196,9 @@ export default function UserDashboard() {
                           <TooltipTrigger asChild>
                             <div className="flex items-center space-x-2 p-2 rounded-md bg-gray-100 dark:bg-gray-700 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
                               <AlertCircle className="h-5 w-5 text-yellow-500" />
-                              <span className="text-sm font-medium">{item.reason}</span>
+                              <span className="text-sm font-medium">
+                                {item.reason}
+                              </span>
                               <ChevronRight className="h-4 w-4 ml-auto" />
                             </div>
                           </TooltipTrigger>
@@ -104,40 +214,10 @@ export default function UserDashboard() {
             </Card>
           </div>
 
-          <div className="lg:col-span-1">
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-2xl">Task Status</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium">Current Status:</span>
-                    <Badge variant={assignedTask.status === "In Progress" ? "default" : "secondary"}>
-                      {assignedTask.status}
-                    </Badge>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600 dark:text-gray-300">Progress</span>
-                      <span className="text-sm font-medium">{assignedTask.progress}%</span>
-                    </div>
-                    <Progress value={assignedTask.progress} className="w-full" />
-                  </div>
-                  <div className="pt-4 border-t">
-                    <h4 className="text-lg font-semibold mb-2">Next Steps</h4>
-                    <ul className="list-disc list-inside space-y-1 text-sm text-gray-600 dark:text-gray-300">
-                      <li>Review current database schema</li>
-                      <li>Identify slow queries</li>
-                      <li>Implement caching mechanism</li>
-                    </ul>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          {/* Include the TaskStatus component here */}
+          <TaskStatus />
         </div>
       </main>
     </div>
-  )
+  );
 }
