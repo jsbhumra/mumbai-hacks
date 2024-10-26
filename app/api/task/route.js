@@ -4,8 +4,20 @@ const { Task, BugTask, FeatureTask } = require("@/models/task");
 export async function POST(request) {
   dbConnect();
   const body = await request.json();
-  console.log(body)
-  const { title, description, priority, deadline, createdBy, tags, activeTab, stepsToReproduce, expectedBehavior, actualBehavior, expectedOutcome } = body;
+  console.log(body);
+  const {
+    title,
+    description,
+    priority,
+    deadline,
+    createdBy,
+    tags,
+    activeTab,
+    stepsToReproduce,
+    expectedBehavior,
+    actualBehavior,
+    expectedOutcome,
+  } = body;
 
   try {
     // Common fields for both bug and feature
@@ -14,7 +26,7 @@ export async function POST(request) {
       description,
       priority,
       deadline,
-      // createdBy,
+      createdBy,
       tags,
       taskType: activeTab,
     };
@@ -35,7 +47,7 @@ export async function POST(request) {
         expectedOutcome,
       });
     } else {
-      console.log('err')
+      console.log("err");
       return Response.json({ error: "Invalid task type" });
     }
 
@@ -43,6 +55,6 @@ export async function POST(request) {
     await task.save();
     return Response.json({ message: "Task created successfully", task });
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 }
