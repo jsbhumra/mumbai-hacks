@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from "react";
 import { Trophy } from "lucide-react";
 import React from "react";
 import { useRouter } from "next/navigation";
@@ -21,18 +22,28 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function ManagerDashboard() {
   const router = useRouter();
   const [currentPage, setCurrentPage] = React.useState("dashboard");
+  const [tasks, setTasks] = useState([]);
+
+  // Fetch task count from API
+  useEffect(() => {
+    async function fetchTasks() {
+      try {
+        const response = await fetch('/api/task/all',{ 
+          method:'GET'});
+        const data = await response.json();
+        setTasks(data);
+      } catch (error) {
+        console.error("Error fetching task count:", error);
+      }
+    }
+
+    fetchTasks();
+  }, []);
 
   // Chart data
   const chartData = {
@@ -40,7 +51,7 @@ export default function ManagerDashboard() {
     datasets: [
       {
         label: "Tasks",
-        data: [12, 19, 3, 5],
+        data: [tasks.filter((e)=>e.status=='PENDING').length, tasks.filter((e)=>e.status=='IN_PROGRESS').length, tasks.filter((e)=>e.status=='COMPLETED').length, tasks.filter((e)=>e.status=='CANCELLED').length],
         backgroundColor: ["#3498db", "#f1c40f", "#2ecc71", "#e74c3c"],
       },
     ],
@@ -49,7 +60,7 @@ export default function ManagerDashboard() {
   const chartOptions = {
     responsive: true,
     plugins: {
-      legend: { position: "top", labels: { color: "#333" } },
+      // legend: { position: "top", labels: { color: "#333" } },
       title: {
         display: true,
         text: "Task Progress Overview",
@@ -77,7 +88,7 @@ export default function ManagerDashboard() {
                   <CardHeader>
                     <CardTitle className="text-lg font-bold">Ongoing Tasks</CardTitle>
                   </CardHeader>
-                  <CardContent className="text-4xl font-semibold">25</CardContent>
+                  <CardContent className="text-4xl font-semibold">{tasks.length}</CardContent>
                 </Card>
               </div>
             </section>
@@ -92,24 +103,17 @@ export default function ManagerDashboard() {
                   <Bar data={chartData} options={chartOptions} />
                 </CardContent>
               </Card>
-
-              {/* const topEmployee = {
-                fullName: "Olivia Martin",
-              tasksCompleted: 20,};  */}
-
               <Card className="bg-white shadow-lg border border-gray-200 rounded-lg">
                 <CardHeader className="border-b">
                   <CardTitle className="text-xl font-bold text-gray-800 flex items-center">
-                   {/* Trophy Icon */}
                     Team Performance
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6">
-                <Trophy className="mr-2 h-16 w-16 text-yellow-500" /> 
+                  <Trophy className="mr-2 h-16 w-16 text-yellow-500" /> 
                   <div className="mt-14">
                     <h3 className="text-lg font-semibold text-gray-800">Top Employee:</h3>
                     <p className="text-md text-gray-600">Ritvik</p>
-                    {/* <p className="text-sm text-gray-500">Tasks Completed: {topEmployee.tasksCompleted}</p> */}
                   </div>
                 </CardContent>
               </Card>
@@ -139,28 +143,23 @@ export default function ManagerDashboard() {
           <div className="space-y-4">
             <Button
               variant={currentPage === "dashboard" ? "secondary" : "ghost"}
-              className={`w-full justify-start ${currentPage === "dashboard" ? "text-blue-500" : "text-gray-600"
-                }`}
+              className={`w-full justify-start ${currentPage === "dashboard" ? "text-blue-500" : "text-gray-600"}`}
               onClick={() => setCurrentPage("dashboard")}
             >
               <LayoutDashboard className="mr-3 h-5 w-5" />
               Dashboard
             </Button>
-
             <Button
               variant={currentPage === "team" ? "secondary" : "ghost"}
-              className={`w-full justify-start ${currentPage === "team" ? "text-blue-500" : "text-gray-600"
-                }`}
+              className={`w-full justify-start ${currentPage === "team" ? "text-blue-500" : "text-gray-600"}`}
               onClick={() => setCurrentPage("team")}
             >
               <UserCircle className="mr-3 h-5 w-5" />
               Team
             </Button>
-
             <Button
               variant={currentPage === "assign" ? "secondary" : "ghost"}
-              className={`w-full justify-start ${currentPage === "assign" ? "text-blue-500" : "text-gray-600"
-                }`}
+              className={`w-full justify-start ${currentPage === "assign" ? "text-blue-500" : "text-gray-600"}`}
               onClick={() => setCurrentPage("assign")}
             >
               <ClipboardList className="mr-3 h-5 w-5" />
